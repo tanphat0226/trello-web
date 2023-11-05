@@ -33,7 +33,7 @@ function Profiles() {
           aria-expanded={open ? 'true' : undefined}
         >
           <Avatar
-            sx={{ width: 30, height: 30 }}
+            sx={{ width: '32px', height: '32px' }}
             alt='Ryan Pham'
             src='https://yt3.ggpht.com/0u6kh3TZfHsbADQ7E9VbZyUJ0yb5_OMRCrjvcSaUJlLuB3dJpMWiC1Kjkyct9OmqPRt2cDQxEw=s88-c-k-c0x00ffffff-no-rj'
           />
