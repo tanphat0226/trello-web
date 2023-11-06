@@ -12,13 +12,13 @@ import Tooltip from '@mui/material/Tooltip'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 
 const MENU_STYLES = {
-  color: 'primary.main',
-  bgcolor: 'white',
+  color: 'white',
+  bgcolor: 'transparent',
   border: 'none',
   paddingX: '5px',
   borderRadius: '4px',
-  '& .MuiSvgIcon-root': {
-    color: 'primary.main'
+  '.MuiSvgIcon-root': {
+    color: 'white'
   },
   '&:hover': {
     bgcolor: 'primary.50'
@@ -37,7 +37,8 @@ function BoardBar() {
         gap: 2,
         paddingX: 2,
         overflowX: 'auto',
-        borderTop: '1px solid #00bfa5'
+        bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2'),
+        borderBottom: '1px solid white  '
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -48,16 +49,27 @@ function BoardBar() {
         <Chip sx={MENU_STYLES} icon={<FilterListIcon />} label='Filters' clickable />
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Button variant='outlined' size='small' startIcon={<PersonAddIcon />}>
+        <Button
+          variant='outlined'
+          size='small'
+          startIcon={<PersonAddIcon />}
+          sx={{
+            color: 'white',
+            borderColor: 'white',
+            '&:hover': { borderColor: 'white' }
+          }}
+        >
           Inivte
         </Button>
         <AvatarGroup
-          max={3}
+          max={7}
           sx={{
+            gap: '10px',
             '& .MuiAvatar-root': {
               width: '32px',
               height: '32px',
-              fontSize: '16px'
+              fontSize: '16px',
+              border: 'none'
             }
           }}
         >
