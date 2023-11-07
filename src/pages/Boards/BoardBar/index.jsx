@@ -38,7 +38,8 @@ function BoardBar() {
         paddingX: 2,
         overflowX: 'auto',
         bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2'),
-        borderBottom: '1px solid white  '
+        borderBottom: '1px solid white',
+        '&::-webkit-scrollbar-track': { m: 2 }
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -62,14 +63,17 @@ function BoardBar() {
           Inivte
         </Button>
         <AvatarGroup
-          max={7}
+          max={4}
           sx={{
             gap: '10px',
             '& .MuiAvatar-root': {
               width: '32px',
               height: '32px',
               fontSize: '16px',
-              border: 'none'
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              '&:first-of-type': { bgcolor: '#a4b0de' }
             }
           }}
         >
