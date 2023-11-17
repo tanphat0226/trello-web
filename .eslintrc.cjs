@@ -10,11 +10,7 @@ module.exports = {
   ],
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   settings: { react: { version: '18.2' } },
-  plugins: [
-    'react',
-    'react-hooks',
-    'react-refresh'
-  ],
+  plugins: ['react', 'react-hooks', 'react-refresh'],
   rules: {
     //React
     'react-refresh/only-export-components': 'warn',
@@ -27,22 +23,23 @@ module.exports = {
     'no-restricted-imports': [
       'error',
       {
-        'patterns': ['@mui/*/*/*']
+        patterns: ['@mui/*/*/*']
       }
     ],
 
     //Common
     'no-console': 1,
     'no-lonely-if': 1,
+    'no-extra-boolean-cast': 0,
     'no-unused-vars': 1,
     'no-trailing-spaces': 1,
     'no-multi-spaces': 1,
     'no-multiple-empty-lines': 1,
     'space-before-blocks': ['error', 'always'],
     'object-curly-spacing': [1, 'always'],
-    'indent': ['warn', 2],
-    'semi': [1, 'never'],
-    'quotes': ['error', 'single'],
+    indent: ['warn', 2],
+    semi: [1, 'never'],
+    quotes: ['error', 'single'],
     'array-bracket-spacing': 1,
     'linebreak-style': 0,
     'no-unexpected-multiline': 'warn',
