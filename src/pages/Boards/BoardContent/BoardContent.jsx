@@ -8,8 +8,8 @@ import {
   DndContext,
   DragOverlay,
   // PointerSensor,
-  MouseSensor,
-  TouchSensor,
+  // MouseSensor,
+  // TouchSensor,
   defaultDropAnimationSideEffects,
   useSensor,
   useSensors,
@@ -19,6 +19,7 @@ import {
   getFirstCollision
   // closestCenter
 } from '@dnd-kit/core'
+import { MouseSensor, TouchSensor } from '~/customLibs/DndKitSensors'
 import { arrayMove } from '@dnd-kit/sortable'
 import { cloneDeep, isEmpty } from 'lodash'
 import { generatePlaceholderCard } from '~/utils/formatters'
