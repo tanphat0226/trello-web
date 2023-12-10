@@ -74,9 +74,17 @@ function Board() {
     const newBoard = { ...board }
     const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId)
     if (columnToUpdate) {
-      columnToUpdate.cards.push(createdCard)
-      columnToUpdate.cardOrderIds.push(createdCard._id)
+      // When a column is empty, it includes a placeholder card.
+      if (columnToUpdate.cards.some(card => card.FE_PlaceholderCard)) {
+        columnToUpdate.cards = [createdCard]
+        columnToUpdate.cardOrderIds = [createdCard._id]
+      } else {
+        // If the column has data, push the card to the end of the array.
+        columnToUpdate.cards.push(createdCard)
+        columnToUpdate.cardOrderIds.push(createdCard._id)
+      }
     }
+
     setBoard(newBoard)
   }
 
@@ -124,12 +132,18 @@ function Board() {
     setBoard(newBoard)
 
     // Call the API handle in BE.
+    let prevCardOrderIds = dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds
+
+    // Handle the problem when the last card is dragged out of the column.
+    // An empty column has a placeholder card, it needs to be deleted before sending data to the backend.
+    if (prevCardOrderIds[0].includes('placeholder-card')) prevCardOrderIds = []
+
     moveCardToDifferentColumnAPI({
       currentCardId,
       prevColumnId,
-      prevCardOrderIds: dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds,
+      prevCardOrderIds,
       nextColoumId,
-      nextCardOrderIds: dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds
+      nextCardOrderIds: dndOrderedColumns.find(c => c._id === nextColoumId)?.cardOrderIds
     })
   }
 
