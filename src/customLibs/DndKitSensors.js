@@ -10,7 +10,6 @@ const handler = ({ nativeEvent: event }) => {
 
   while (cur) {
     if (cur.dataset && cur.dataset.noDnd) {
-      console.log('123123')
       return false
     }
     cur = cur.parentElement

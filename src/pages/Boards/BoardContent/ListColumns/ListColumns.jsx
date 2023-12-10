@@ -15,7 +15,7 @@ function ListColumns({ columns, createNewColumn, createNewCard }) {
 
   const [newColumnTitle, setNewColumnTitle] = useState('')
 
-  const addNewColumn = async () => {
+  const addNewColumn = () => {
     if (!newColumnTitle) {
       toast.error('Please enter Column Title!')
       return
@@ -26,7 +26,7 @@ function ListColumns({ columns, createNewColumn, createNewCard }) {
       title: newColumnTitle
     }
     // Gọi API ở đây...
-    await createNewColumn(newColumnData)
+    createNewColumn(newColumnData)
 
     // Đóng trạng thái thêm Column mới và Clear input
     toggleOpenNewColumnForm()

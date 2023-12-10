@@ -17,7 +17,6 @@ import AddCardIcon from '@mui/icons-material/AddCard'
 import Button from '@mui/material/Button'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import ListCards from './ListCards/ListCards'
-import { mapOrder } from '~/utils/sorts'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import TextField from '@mui/material/TextField'
@@ -41,7 +40,8 @@ function Column({ column, createNewCard }) {
     opacity: isDragging ? 0.5 : undefined
   }
 
-  const orderedCard = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  // Cards đã được sắp xếp ở component cha cao nhất (board/_id.jsx)
+  const orderedCard = column.cards
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
 
@@ -53,7 +53,7 @@ function Column({ column, createNewCard }) {
 
   const [newCardTitle, setNewCardTitle] = useState('')
 
-  const addNewCard = async () => {
+  const addNewCard = () => {
     if (!newCardTitle) {
       toast.error('Please enter Card Title!', { closeOnClick: true })
       return
@@ -64,7 +64,8 @@ function Column({ column, createNewCard }) {
       title: newCardTitle,
       columnId: column._id
     }
-    await createNewCard(newCardData)
+
+    createNewCard(newCardData)
 
     // Đóng trạng thái thêm Column mới và Clear input
     toggleOpenNewCardForm()
