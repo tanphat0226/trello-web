@@ -9,6 +9,7 @@ import { mapOrder } from '~/utils/sorts'
 import {
   createNewCardAPI,
   createNewColumnAPI,
+  deleteColumnDetailsAPI,
   fetchBoardDetailsAPI,
   moveCardToDifferentColumnAPI,
   updateBoardDetailsAPI,
@@ -18,6 +19,7 @@ import { generatePlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
+import { toast } from 'react-toastify'
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -147,6 +149,20 @@ function Board() {
     })
   }
 
+  // Handle delete to a Column and it's Cards
+  const deleteColumnDetails = (columnId) => {
+    // Update the state board data standard.
+    const newBoard = { ...board }
+    newBoard.columns =  newBoard.columns.filter(c => c._id !== columnId)
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== columnId)
+    setBoard(newBoard)
+     
+    // Call the API handle in BE.
+    deleteColumnDetailsAPI(columnId).then(res => {
+      toast.success(res?.deleteResult)
+    })
+  }
+
   if (!board) {
     return (
       <Box sx={{
@@ -169,11 +185,13 @@ function Board() {
       <BoardBar board={board} />
       <BoardContent
         board={board}
+
         createNewColumn={createNewColumn}
         createNewCard={createNewCard}
         moveColumns={moveColumns}
         moveCardInTheSameColumns={moveCardInTheSameColumns}
         moveCardToDifferentColumn={moveCardToDifferentColumn}
+        deleteColumnDetails={deleteColumnDetails}
       />
     </Container>
   )
