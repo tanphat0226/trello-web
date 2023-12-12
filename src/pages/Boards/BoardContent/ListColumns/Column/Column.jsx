@@ -80,7 +80,7 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
       title: 'Delete Column?',
       description: 'This action will permanently delete your Column and it\'s Cards! Are you sure?',
       confirmationText: 'Confirm',
-      cancellationText: 'Cancel',
+      cancellationText: 'Cancel'
 
       // allowClose: false,
       // dialogProps: { maxWidth: 'xs' },
