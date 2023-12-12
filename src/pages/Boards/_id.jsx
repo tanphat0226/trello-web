@@ -156,7 +156,7 @@ function Board() {
     newBoard.columns =  newBoard.columns.filter(c => c._id !== columnId)
     newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== columnId)
     setBoard(newBoard)
-     
+
     // Call the API handle in BE.
     deleteColumnDetailsAPI(columnId).then(res => {
       toast.success(res?.deleteResult)
