@@ -28,16 +28,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({
-  board,
-
-  createNewColumn,
-  createNewCard,
-  moveColumns,
-  moveCardInTheSameColumns,
-  moveCardToDifferentColumn,
-  deleteColumnDetails
-}) {
+function BoardContent({ board, moveColumns, moveCardInTheSameColumns, moveCardToDifferentColumn }) {
   //https://docs.dndkit.com/api-documentation/sensors
   // Nếu dùng PointerSensor thì phải  kết hợp thuộc tính CSS touchAction: 'none' ở những phần tử kéo thả nhưng vẫn còn bug
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
@@ -138,12 +129,7 @@ function BoardContent({
 
       // Đã kéo xong thì mới xữ lý việc gọi API
       if (triggerFrom === 'handleDragEnd') {
-        moveCardToDifferentColumn(
-          activeDraggingCardId,
-          oldColumn._id,
-          nextOverColumn._id,
-          nextColoums
-        )
+        moveCardToDifferentColumn(activeDraggingCardId, oldColumn._id, nextOverColumn._id, nextColoums)
       }
 
       return nextColoums
@@ -302,7 +288,6 @@ function BoardContent({
 
         // Call the API and handle when dragging and dropping is completed.
         moveColumns(dndOrderedColumns)
-
       }
     }
 
@@ -378,12 +363,7 @@ function BoardContent({
           p: '10px 0'
         }}
       >
-        <ListColumns
-          columns={orderedColumns}
-          createNewColumn={createNewColumn}
-          createNewCard={createNewCard}
-          deleteColumnDetails={deleteColumnDetails}
-        />
+        <ListColumns columns={orderedColumns} />
         <DragOverlay dropAnimation={dropAnimation}>
           {!activeDragItemType && null}
           {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && <Column column={activeDragItemData} />}

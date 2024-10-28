@@ -16,19 +16,27 @@ import ContentPasteIcon from '@mui/icons-material/ContentPaste'
 import AddCardIcon from '@mui/icons-material/AddCard'
 import Button from '@mui/material/Button'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
-import ListCards from './ListCards/ListCards'
 import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
-import { toast } from 'react-toastify'
 import { useConfirm } from 'material-ui-confirm'
+import { toast } from 'react-toastify'
+import { createNewCardAPI, deleteColumnDetailsAPI } from '~/apis'
+import { CSS } from '@dnd-kit/utilities'
+import { useDispatch, useSelector } from 'react-redux'
+import { cloneDeep } from 'lodash'
 
-function Column({ column, createNewCard, deleteColumnDetails }) {
+import ListCards from './ListCards/ListCards'
+import { selectCurrentActiveBoard, updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+
+function Column({ column }) {
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
     data: { ...column }
   })
+
   const dndKitColumnStyles = {
     // touchAction: 'none', // Dành cho sensor default dạng PointerSensor
     // Nếu dùng CSS.Transform sẽ bị lỗi stretch
@@ -54,7 +62,7 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
 
   const [newCardTitle, setNewCardTitle] = useState('')
 
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter Card Title!', { closeOnClick: true })
       return
@@ -66,7 +74,28 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
       columnId: column._id
     }
 
-    createNewCard(newCardData)
+    // Call the API to create a new card and then redo the state board.
+    const createdCard = await createNewCardAPI({
+      ...newCardData,
+      boardId: board._id
+    })
+
+    // Update State Board
+    const newBoard = cloneDeep(board)
+    const columnToUpdate = newBoard.columns.find((column) => column._id === createdCard.columnId)
+    if (columnToUpdate) {
+      // When a column is empty, it includes a placeholder card.
+      if (columnToUpdate.cards.some((card) => card.FE_PlaceholderCard)) {
+        columnToUpdate.cards = [createdCard]
+        columnToUpdate.cardOrderIds = [createdCard._id]
+      } else {
+        // If the column has data, push the card to the end of the array.
+        columnToUpdate.cards.push(createdCard)
+        columnToUpdate.cardOrderIds.push(createdCard._id)
+      }
+    }
+
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     // Đóng trạng thái thêm Column mới và Clear input
     toggleOpenNewCardForm()
@@ -78,7 +107,8 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
   const handleDeleteColumn = () => {
     confirmDeleteColumn({
       title: 'Delete Column?',
-      description: 'This action will permanently delete your Column and it\'s Cards! Are you sure?',
+      // eslint-disable-next-line quotes
+      description: `This action will permanently delete your Column and it's Cards! Are you sure?`,
       confirmationText: 'Confirm',
       cancellationText: 'Cancel'
 
@@ -88,8 +118,19 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
       // cancellationButtonProps: { color: 'inherit' }
     })
       .then(() => {
-        deleteColumnDetails(column._id)
-      }).catch(() => {})
+        // Handle delete to a Column and it's Cards
+        // Update the state board data standard.
+        const newBoard = { ...board }
+        newBoard.columns = newBoard.columns.filter((c) => c._id !== column._id)
+        newBoard.columnOrderIds = newBoard.columnOrderIds.filter((_id) => _id !== column._id)
+        dispatch(updateCurrentActiveBoard(newBoard))
+
+        // Call the API handle in BE.
+        deleteColumnDetailsAPI(column._id).then((res) => {
+          toast.success(res?.deleteResult)
+        })
+      })
+      .catch(() => {})
   }
 
   return (
@@ -216,24 +257,31 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
             p: 2
           }}
         >
-          {!openNewCardForm
-            ? <Box sx={{
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}>
-              <Button startIcon={<AddCardIcon />} onClick={toggleOpenNewCardForm}>Add new card</Button>
+          {!openNewCardForm ? (
+            <Box
+              sx={{
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <Button startIcon={<AddCardIcon />} onClick={toggleOpenNewCardForm}>
+                Add new card
+              </Button>
               <Tooltip title='Drag to move'>
                 <DragHandleIcon sx={{ cursor: 'ponter' }} />
               </Tooltip>
             </Box>
-            : <Box sx={{
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1
-            }}>
+          ) : (
+            <Box
+              sx={{
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1
+              }}
+            >
               <TextField
                 label='Enter card title...'
                 type='text'
@@ -247,7 +295,7 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
                   '& label': { color: 'text.primary' },
                   '& input': {
                     color: (theme) => theme.palette.primary.main,
-                    bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : 'white' )
+                    bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : 'white')
                   },
                   '& label.Mui-focused': { color: (theme) => theme.palette.primary.main },
                   '& .MuiOutlinedInput-root': {
@@ -258,23 +306,20 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
                   '& .MuiOutlinedInput-input': { borderRadius: 1 }
                 }}
               />
-              <Box
-                data-no-dnd='true'
-                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-              >
+              <Box data-no-dnd='true' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Button
                   onClick={addNewCard}
                   variant='contained'
                   color='success'
-                  size="small"
+                  size='small'
                   sx={{
                     boxShadow: 'none',
                     border: '0.5px solid',
                     borderColor: (theme) => theme.palette.success.main,
-                    '&:hover' : { bgcolor: (theme) => theme.palette.success.main }
+                    '&:hover': { bgcolor: (theme) => theme.palette.success.main }
                   }}
                 >
-                Add
+                  Add
                 </Button>
                 <CloseIcon
                   fontSize='small'
@@ -286,7 +331,7 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
                 />
               </Box>
             </Box>
-          }
+          )}
         </Box>
       </Box>
     </div>

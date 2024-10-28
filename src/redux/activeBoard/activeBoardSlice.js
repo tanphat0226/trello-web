@@ -20,7 +20,7 @@ export const activeBoardSlice = createSlice({
   name: 'activeBoard',
   initialState,
   reducers: {
-    updateCurrent: (state, action) => {
+    updateCurrentActiveBoard: (state, action) => {
       state.currentActiveBoard = action.payload
     }
   },
@@ -50,7 +50,7 @@ export const activeBoardSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { updateCurrent } = activeBoardSlice.actions
+export const { updateCurrentActiveBoard } = activeBoardSlice.actions
 
 // Selectors
 export const selectCurrentActiveBoard = (state) => {
