@@ -16,16 +16,18 @@ import {
   updateCurrentActiveBoard,
   fetchBoardDetailsAPI
 } from '~/redux/activeBoard/activeBoardSlice'
+import { useParams } from 'react-router-dom'
 
 function Board() {
   const dispatch = useDispatch()
   const board = useSelector(selectCurrentActiveBoard)
+  const { boardId } = useParams()
 
   useEffect(() => {
-    const boardId = '656f2c7ee57083faa909a763'
+    // const boardId = '656f2c7ee57083faa909a763'
 
     dispatch(fetchBoardDetailsAPI(boardId))
-  }, [dispatch])
+  }, [dispatch, boardId])
 
   // Call the API and handle when dragging and dropping is completed.
   const moveColumns = (dndOrderedColumns) => {
