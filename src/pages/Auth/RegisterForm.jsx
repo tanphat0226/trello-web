@@ -1,5 +1,4 @@
-// TrungQuanDev: https://youtube.com/@trungquandev
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Avatar from '@mui/material/Avatar'
@@ -19,6 +18,8 @@ import {
   PASSWORD_RULE,
   PASSWORD_RULE_MESSAGE
 } from '~/utils/validators'
+import { registerUserAPI } from '~/apis'
+import { toast } from 'react-toastify'
 
 function RegisterForm() {
   const {
@@ -28,8 +29,18 @@ function RegisterForm() {
     watch
   } = useForm()
 
+  const navigate = useNavigate()
+
   const submitRegister = (data) => {
-    console.log(data)
+    const { email, password } = data
+
+    toast
+      .promise(registerUserAPI({ email, password }), {
+        pending: 'Registration is in progress...'
+      })
+      .then((user) => {
+        navigate(`/login?registeredEmail=${user.email}`)
+      })
   }
 
   return (

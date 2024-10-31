@@ -1,22 +1,21 @@
 //Board details
-import { useEffect } from 'react'
 import Container from '@mui/material/Container'
-import Box from '@mui/material/Box'
-import CircularProgress from '@mui/material/CircularProgress'
-import { useDispatch, useSelector } from 'react-redux'
 import { cloneDeep } from 'lodash'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 // import { mockData } from '~/apis/mock-data'
-import { moveCardToDifferentColumnAPI, updateBoardDetailsAPI, updateColumnDetailsAPI } from '~/apis'
-import {
-  selectCurrentActiveBoard,
-  updateCurrentActiveBoard,
-  fetchBoardDetailsAPI
-} from '~/redux/activeBoard/activeBoardSlice'
 import { useParams } from 'react-router-dom'
+import { moveCardToDifferentColumnAPI, updateBoardDetailsAPI, updateColumnDetailsAPI } from '~/apis'
+import PageLoading from '~/components/Loading/PageLoading'
+import {
+  fetchBoardDetailsAPI,
+  selectCurrentActiveBoard,
+  updateCurrentActiveBoard
+} from '~/redux/activeBoard/activeBoardSlice'
 
 function Board() {
   const dispatch = useDispatch()
@@ -88,22 +87,7 @@ function Board() {
     })
   }
 
-  if (!board) {
-    return (
-      <Box
-        sx={{
-          width: '100vw',
-          height: '100vh',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: 2
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    )
-  }
+  if (!board) return <PageLoading caption='Loading board...' />
 
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
