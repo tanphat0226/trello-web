@@ -17,24 +17,31 @@ import { store } from './redux/store'
 // Config React Router Dom
 import { BrowserRouter } from 'react-router-dom'
 
+// Config Redux Persist
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistStore } from 'redux-persist'
+const persistor = persistStore(store)
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode>
   <BrowserRouter basename='/'>
     <Provider store={store}>
-      <CssVarsProvider theme={theme}>
-        <ConfirmProvider
-          defaultOptions={{
-            allowClose: false,
-            dialogProps: { maxWidth: 'xs' },
-            confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
-            cancellationButtonProps: { color: 'inherit' }
-          }}
-        >
-          <CssBaseline />
-          <App />
-          <ToastContainer position='bottom-right' theme='colored' />
-        </ConfirmProvider>
-      </CssVarsProvider>
+      <PersistGate persistor={persistor} loading={null}>
+        <CssVarsProvider theme={theme}>
+          <ConfirmProvider
+            defaultOptions={{
+              allowClose: false,
+              dialogProps: { maxWidth: 'xs' },
+              confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
+              cancellationButtonProps: { color: 'inherit' }
+            }}
+          >
+            <CssBaseline />
+            <App />
+            <ToastContainer position='bottom-right' theme='colored' />
+          </ConfirmProvider>
+        </CssVarsProvider>
+      </PersistGate>
     </Provider>
   </BrowserRouter>
   // </React.StrictMode>
