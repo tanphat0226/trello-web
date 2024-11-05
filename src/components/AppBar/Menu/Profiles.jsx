@@ -1,17 +1,23 @@
-import { useState } from 'react'
-import Box from '@mui/material/Box'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import Divider from '@mui/material/Divider'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import Avatar from '@mui/material/Avatar'
-import IconButton from '@mui/material/IconButton'
-import Tooltip from '@mui/material/Tooltip'
+import Logout from '@mui/icons-material/Logout'
 import PersonAdd from '@mui/icons-material/PersonAdd'
 import Settings from '@mui/icons-material/Settings'
-import Logout from '@mui/icons-material/Logout'
+import Avatar from '@mui/material/Avatar'
+import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Tooltip from '@mui/material/Tooltip'
+import { useConfirm } from 'material-ui-confirm'
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { logoutUserAPI, selectCurrentUser } from '~/redux/user/userSlice'
 
 function Profiles() {
+  const dispatch = useDispatch()
+  const currentUser = useSelector(selectCurrentUser)
+  const confirmLogout = useConfirm()
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -19,6 +25,18 @@ function Profiles() {
   }
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const handleLogout = () => {
+    confirmLogout({
+      description: 'Are you sure you want to logout?',
+      confirmationText: 'Logout',
+      cancellationText: 'Cancel'
+    })
+      .then(() => {
+        dispatch(logoutUserAPI())
+      })
+      .catch(() => {})
   }
 
   return (
@@ -34,8 +52,8 @@ function Profiles() {
         >
           <Avatar
             sx={{ width: '36px', height: '36px' }}
-            alt='Ryan Pham'
-            src='https://yt3.ggpht.com/0u6kh3TZfHsbADQ7E9VbZyUJ0yb5_OMRCrjvcSaUJlLuB3dJpMWiC1Kjkyct9OmqPRt2cDQxEw=s88-c-k-c0x00ffffff-no-rj'
+            alt={`Avatar of ${currentUser?.username}`}
+            src={currentUser?.avatar}
           />
         </IconButton>
       </Tooltip>
@@ -43,16 +61,18 @@ function Profiles() {
         id='basic-menu-profiles'
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClick={handleClose}
         MenuListProps={{
           'aria-labelledby': 'basic-button-profiles'
         }}
       >
-        <MenuItem>
-          <Avatar sx={{ width: '26px', height: '26px', mr: 2 }} /> Profile
-        </MenuItem>
-        <MenuItem>
-          <Avatar sx={{ width: '26px', height: '26px', mr: 2 }} /> My account
+        <MenuItem sx={{ '&:hover': { color: 'success.light' } }}>
+          <Avatar
+            sx={{ width: '26px', height: '26px', mr: 2 }}
+            src={currentUser?.avatar}
+            alt={`Avatar of ${currentUser?.username}`}
+          />
+          Profile
         </MenuItem>
         <Divider />
         <MenuItem>
@@ -67,9 +87,12 @@ function Profiles() {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem>
+        <MenuItem
+          onClick={handleLogout}
+          sx={{ '&:hover': { color: 'warning.dark', '& .logout-icon': { color: 'warning.dark' } } }}
+        >
           <ListItemIcon>
-            <Logout fontSize='small' />
+            <Logout className='logout-icon' fontSize='small' />
           </ListItemIcon>
           Logout
         </MenuItem>
