@@ -20,6 +20,7 @@ import Recent from './Menu/Recent'
 import Starred from './Menu/Starred'
 import Templates from './Menu/Templates'
 import Workspaces from './Menu/Workspaces'
+import { Link } from 'react-router-dom'
 
 function AppBar() {
   const [searchValue, setSearchValue] = useState('')
@@ -41,12 +42,14 @@ function AppBar() {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <AppsIcon sx={{ color: 'white' }} />
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          <SvgIcon component={TrelloIcon} fontSize='small' inheritViewBox sx={{ color: 'white' }} />
-          <Typography variant='span' sx={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'white' }}>
-            Trello
-          </Typography>
-        </Box>
+        <Link to='/'>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <SvgIcon component={TrelloIcon} fontSize='small' inheritViewBox sx={{ color: 'white' }} />
+            <Typography variant='span' sx={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'white' }}>
+              Trello
+            </Typography>
+          </Box>
+        </Link>
 
         <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
           <Workspaces />
