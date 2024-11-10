@@ -81,11 +81,22 @@ function AccountTab() {
     reqData.append('avatar', e.target?.files[0])
     // Cách để log được dữ liệu thông qua FormData
     // console.log('reqData: ', reqData)
-    for (const value of reqData.values()) {
-      // console.log('reqData Value: ', value)
-    }
+    // for (const value of reqData.values()) {
+    //   console.log('reqData Value: ', value)
+    // }
 
     // Gọi API...
+    toast
+      .promise(dispatch(updateUserAPI(reqData)), {
+        pending: 'Updating...'
+      })
+      .then((res) => {
+        // Check login successful not have error, redirect to / route
+        if (!res.error) toast.success('Updated successfully!')
+
+        // Clear avatar field
+        e.target.value = ''
+      })
   }
 
   return (
