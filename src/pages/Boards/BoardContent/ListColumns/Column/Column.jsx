@@ -1,33 +1,33 @@
-import { useState } from 'react'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import AddCardIcon from '@mui/icons-material/AddCard'
+import CloseIcon from '@mui/icons-material/Close'
+import Cloud from '@mui/icons-material/Cloud'
+import ContentCopy from '@mui/icons-material/ContentCopy'
+import ContentCut from '@mui/icons-material/ContentCut'
+import ContentPasteIcon from '@mui/icons-material/ContentPaste'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import DragHandleIcon from '@mui/icons-material/DragHandle'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Box from '@mui/material/Box'
-import Tooltip from '@mui/material/Tooltip'
+import Button from '@mui/material/Button'
+import Divider from '@mui/material/Divider'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import Divider from '@mui/material/Divider'
-import ListItemText from '@mui/material/ListItemText'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import Typography from '@mui/material/Typography'
-import ContentCut from '@mui/icons-material/ContentCut'
-import ContentCopy from '@mui/icons-material/ContentCopy'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
-import Cloud from '@mui/icons-material/Cloud'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ContentPasteIcon from '@mui/icons-material/ContentPaste'
-import AddCardIcon from '@mui/icons-material/AddCard'
-import Button from '@mui/material/Button'
-import DragHandleIcon from '@mui/icons-material/DragHandle'
-import { useSortable } from '@dnd-kit/sortable'
 import TextField from '@mui/material/TextField'
-import CloseIcon from '@mui/icons-material/Close'
-import { useConfirm } from 'material-ui-confirm'
-import { toast } from 'react-toastify'
-import { createNewCardAPI, deleteColumnDetailsAPI } from '~/apis'
-import { CSS } from '@dnd-kit/utilities'
-import { useDispatch, useSelector } from 'react-redux'
+import Tooltip from '@mui/material/Tooltip'
 import { cloneDeep } from 'lodash'
+import { useConfirm } from 'material-ui-confirm'
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+import { createNewCardAPI, deleteColumnDetailsAPI, updateColumnDetailsAPI } from '~/apis'
 
-import ListCards from './ListCards/ListCards'
+import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
 import { selectCurrentActiveBoard, updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+import ListCards from './ListCards/ListCards'
 
 function Column({ column }) {
   const dispatch = useDispatch()
@@ -133,6 +133,17 @@ function Column({ column }) {
       .catch(() => {})
   }
 
+  // Handle update column title
+  const handleUpdateColumnTitle = async (title) => {
+    // Call the API to update the column title.
+    updateColumnDetailsAPI(column._id, { title }).then((res) => {
+      const newBoard = cloneDeep(board)
+      const columnToUpdate = newBoard.columns.find((c) => c._id === column._id)
+      if (columnToUpdate) columnToUpdate.title = title
+      dispatch(updateCurrentActiveBoard(newBoard))
+    })
+  }
+
   return (
     // Bọc div ở đây vì vấn đề height của column khi kéo thả sẽ có bug kiểu kiểu flickering.
     <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes}>
@@ -158,7 +169,7 @@ function Column({ column }) {
             justifyContent: 'space-between'
           }}
         >
-          <Typography
+          {/* <Typography
             variant='h6'
             sx={{
               fontSize: '1rem',
@@ -167,7 +178,8 @@ function Column({ column }) {
             }}
           >
             {column?.title}
-          </Typography>
+          </Typography> */}
+          <ToggleFocusInput value={column?.title} onChangedValue={handleUpdateColumnTitle} data-no-dnd='true' />
           <Box>
             <Tooltip title='More options'>
               <ExpandMoreIcon
