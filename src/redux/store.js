@@ -5,6 +5,7 @@ import { userReducer } from './user/userSlice'
 
 import persistReducer from 'redux-persist/es/persistReducer'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
+import { activeCardReducer } from './activeCard/activeCardSlice'
 
 /**
  * Config redux-persist
@@ -24,7 +25,8 @@ const rootPersistConfig = {
 // Combine all reducers
 const reducers = combineReducers({
   activeBoard: activeBoardReducer,
-  user: userReducer
+  user: userReducer,
+  activeCard: activeCardReducer
 })
 
 // Implement redux-persist

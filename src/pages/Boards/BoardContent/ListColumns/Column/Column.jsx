@@ -136,7 +136,7 @@ function Column({ column }) {
   // Handle update column title
   const handleUpdateColumnTitle = async (title) => {
     // Call the API to update the column title.
-    updateColumnDetailsAPI(column._id, { title }).then((res) => {
+    updateColumnDetailsAPI(column._id, { title }).then(() => {
       const newBoard = cloneDeep(board)
       const columnToUpdate = newBoard.columns.find((c) => c._id === column._id)
       if (columnToUpdate) columnToUpdate.title = title

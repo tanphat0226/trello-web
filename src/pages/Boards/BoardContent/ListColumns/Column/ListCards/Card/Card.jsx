@@ -9,8 +9,11 @@ import AttachmentIcon from '@mui/icons-material/Attachment'
 import Typography from '@mui/material/Typography'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useDispatch } from 'react-redux'
+import { updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
 
 function Card({ card }) {
+  const dispatch = useDispatch()
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card._id,
     data: { ...card }
@@ -26,12 +29,25 @@ function Card({ card }) {
     border: isDragging ? '1px solid #2ecc71' : undefined
   }
 
-  const shouldShowCardActions = () => {
-    return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length
-  }
+  /**
+   * Determine if the card should show card actions
+   * @param {Object} card The card data to be checked
+   * @returns {boolean} true if the card should show card actions, false otherwise
+   * @private
+   */
+  const shouldShowCardActions = () =>
+    !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length
+
+  /**
+   * Update data for activeCard in Redux
+   * @param {Object} card The card data to be updated
+   * @returns {void}
+   */
+  const setActiveCard = () => dispatch(updateCurrentActiveCard(card))
 
   return (
     <MuiCard
+      onClick={() => dispatch(setActiveCard)}
       ref={setNodeRef}
       style={dndKitCardStyles}
       {...attributes}

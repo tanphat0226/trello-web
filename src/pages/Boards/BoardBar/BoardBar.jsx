@@ -1,16 +1,17 @@
+import AddToDriveIcon from '@mui/icons-material/AddToDrive'
+import BoltIcon from '@mui/icons-material/Bolt'
+import DashboardIcon from '@mui/icons-material/Dashboard'
+import FilterListIcon from '@mui/icons-material/FilterList'
+import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import VpnLockIcon from '@mui/icons-material/VpnLock'
+import Avatar from '@mui/material/Avatar'
+import AvatarGroup from '@mui/material/AvatarGroup'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
-import DashboardIcon from '@mui/icons-material/Dashboard'
-import VpnLockIcon from '@mui/icons-material/VpnLock'
-import AddToDriveIcon from '@mui/icons-material/AddToDrive'
-import BoltIcon from '@mui/icons-material/Bolt'
-import FilterListIcon from '@mui/icons-material/FilterList'
-import Avatar from '@mui/material/Avatar'
-import AvatarGroup from '@mui/material/AvatarGroup'
 import Tooltip from '@mui/material/Tooltip'
-import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { capitalizeFirstLetter } from '~/utils/formatters'
+import BoardUserGroup from './BoardUserGroup'
 
 const MENU_STYLES = {
   color: 'white',
@@ -43,38 +44,13 @@ function BoardBar({ board }) {
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Tooltip title={board?.description} >
-          <Chip
-            sx={MENU_STYLES}
-            icon={<DashboardIcon />}
-            label={board?.title}
-            clickable
-          />
+        <Tooltip title={board?.description}>
+          <Chip sx={MENU_STYLES} icon={<DashboardIcon />} label={board?.title} clickable />
         </Tooltip>
-        <Chip
-          sx={MENU_STYLES}
-          icon={<VpnLockIcon />}
-          label={capitalizeFirstLetter(board?.type)}
-          clickable
-        />
-        <Chip
-          sx={MENU_STYLES}
-          icon={<AddToDriveIcon />}
-          label='Add to Google Drive'
-          clickable
-        />
-        <Chip
-          sx={MENU_STYLES}
-          icon={<BoltIcon />}
-          label='Automation'
-          clickable
-        />
-        <Chip
-          sx={MENU_STYLES}
-          icon={<FilterListIcon />}
-          label='Filters'
-          clickable
-        />
+        <Chip sx={MENU_STYLES} icon={<VpnLockIcon />} label={capitalizeFirstLetter(board?.type)} clickable />
+        <Chip sx={MENU_STYLES} icon={<AddToDriveIcon />} label='Add to Google Drive' clickable />
+        <Chip sx={MENU_STYLES} icon={<BoltIcon />} label='Automation' clickable />
+        <Chip sx={MENU_STYLES} icon={<FilterListIcon />} label='Filters' clickable />
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Button
@@ -89,40 +65,8 @@ function BoardBar({ board }) {
         >
           Inivte
         </Button>
-        <AvatarGroup
-          max={4}
-          sx={{
-            gap: '10px',
-            '& .MuiAvatar-root': {
-              width: '32px',
-              height: '32px',
-              fontSize: '16px',
-              border: 'none',
-              color: 'white',
-              cursor: 'pointer',
-              '&:first-of-type': { bgcolor: '#a4b0de' }
-            }
-          }}
-        >
-          <Tooltip title='Ryan Pham'>
-            <Avatar
-              alt='Ryan Pham'
-              src='https://yt3.ggpht.com/0u6kh3TZfHsbADQ7E9VbZyUJ0yb5_OMRCrjvcSaUJlLuB3dJpMWiC1Kjkyct9OmqPRt2cDQxEw=s88-c-k-c0x00ffffff-no-rj'
-            />
-          </Tooltip>
-          <Tooltip title='Ryan Pham'>
-            <Avatar alt='Ryan Pham' src='https://source.unsplash.com/random' />
-          </Tooltip>
-          <Tooltip title='Ryan Pham'>
-            <Avatar alt='Ryan Pham' src='https://source.unsplash.com/random' />
-          </Tooltip>
-          <Tooltip title='Ryan Pham'>
-            <Avatar alt='Ryan Pham' src='https://source.unsplash.com/random' />
-          </Tooltip>
-          <Tooltip title='Ryan Pham'>
-            <Avatar alt='Ryan Pham' src='https://source.unsplash.com/random' />
-          </Tooltip>
-        </AvatarGroup>
+
+        <BoardUserGroup />
       </Box>
     </Box>
   )
