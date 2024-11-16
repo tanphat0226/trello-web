@@ -23,24 +23,23 @@ import Modal from '@mui/material/Modal'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Unstable_Grid2'
-import { useState } from 'react'
 
 import { styled } from '@mui/material/styles'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { updateCardDetailsAPI } from '~/apis'
 import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
 import VisuallyHiddenInput from '~/components/Form/VisuallyHiddenInput'
-import { singleFileValidator } from '~/utils/validators'
-import CardActivitySection from './CardActivitySection'
-import CardDescriptionMdEditor from './CardDescriptionMdEditor'
-import CardUserGroup from './CardUserGroup'
-import { useDispatch, useSelector } from 'react-redux'
+import { updateCardInBoard } from '~/redux/activeBoard/activeBoardSlice'
 import {
   clearCurrentActiveCard,
   selectCurrentActiveCard,
   updateCurrentActiveCard
 } from '~/redux/activeCard/activeCardSlice'
-import { updateCardDetailsAPI } from '~/apis'
-import { updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+import { singleFileValidator } from '~/utils/validators'
+import CardActivitySection from './CardActivitySection'
+import CardDescriptionMdEditor from './CardDescriptionMdEditor'
+import CardUserGroup from './CardUserGroup'
 
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -71,28 +70,68 @@ function ActiveCard() {
   // const [isOpen, setIsOpen] = useState(true)
   // const handleOpenModal = () => setIsOpen(true)
 
+  /**
+   * Handles the event when the user wants to close the modal.
+   * We simply clear the current active card to close the modal.
+   */
   const handleCloseModal = () => {
     // setIsOpen(false)
     dispatch(clearCurrentActiveCard())
   }
 
+  /**
+   * Call API to update card details.
+   * @param {Object} data The data to be updated.
+   * @returns {Promise<Object>} The updated card data.
+   *
+   * This function will do two things:
+   * 1. Update the current active card in the present modal.
+   * 2. Update the current active card in the activeBoard data in Redux (nested data).
+   */
   const callApiUpdateCard = async (data) => {
     const updatedCard = await updateCardDetailsAPI(activeCard._id, data)
 
     // Step 1 : Update the activing card in present moal.
     dispatch(updateCurrentActiveCard(updatedCard))
-    // Step 2 : Update the activing card in the activeBoa rd data in Redux
-    // dispatch(updateCurrentActiveBoard(updatedCard))
+    // Step 2 : Update the activing card in the activeBoard data in Redux (nested data)
+    dispatch(updateCardInBoard(updatedCard))
 
     return updatedCard
   }
 
+  /**
+   * @function onUpdateCardTitle
+   * @description Call API to update the title of the card in database
+   * @param {string} newTitle - The new title of the card
+   * @returns {Promise} - The promise of the axios request
+   */
   const onUpdateCardTitle = (newTitle) => {
     callApiUpdateCard({ title: newTitle.trim() })
   }
 
+  /**
+   * @function onUpdateCardDescription
+   * @description Call API to update the description of the card in database
+   * @param {string} newDescription - The new description of the card
+   * @returns {Promise} - The promise of the axios request
+   */
+  const onUpdateCardDescription = (newDescription) => {
+    callApiUpdateCard({ description: newDescription })
+  }
+
+  /*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * @function onUploadCardCover
+   * @description Call API to update the cover of the card in database
+   * @param {Event} event - The event of the file input
+   * @returns {Promise} - The promise of the axios request
+   *
+   * This function will validate the uploaded file first, if the file is invalid, it will toast an error message and return.
+   * If the file is valid, it will call the API to update the cover of the card and toast a pending message.
+   * After the request is finished, it will reset the value of the file input to empty string.
+   */
+  /******  18387cfe-097f-4eb0-8b68-cbc448f2d08e  *******/
   const onUploadCardCover = (event) => {
-    console.log(event.target?.files[0])
     const error = singleFileValidator(event.target?.files[0])
     if (error) {
       toast.error(error)
@@ -102,6 +141,12 @@ function ActiveCard() {
     reqData.append('cardCover', event.target?.files[0])
 
     // Gọi API...
+    toast.promise(
+      callApiUpdateCard(reqData).finally(() => (event.target.value = '')),
+      {
+        pending: 'Updating...'
+      }
+    )
   }
 
   return (
@@ -173,7 +218,10 @@ function ActiveCard() {
               </Box>
 
               {/* Feature 03: Xử lý mô tả của Card */}
-              <CardDescriptionMdEditor />
+              <CardDescriptionMdEditor
+                cardDescriptionProp={activeCard?.description}
+                handleUpdateCardDescription={onUpdateCardDescription}
+              />
             </Box>
 
             <Box sx={{ mb: 3 }}>

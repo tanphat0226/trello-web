@@ -4,8 +4,6 @@ import DashboardIcon from '@mui/icons-material/Dashboard'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import VpnLockIcon from '@mui/icons-material/VpnLock'
-import Avatar from '@mui/material/Avatar'
-import AvatarGroup from '@mui/material/AvatarGroup'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
@@ -28,6 +26,7 @@ const MENU_STYLES = {
 }
 
 function BoardBar({ board }) {
+  console.log(board?.FE_allUsers)
   return (
     <Box
       sx={{
@@ -65,8 +64,7 @@ function BoardBar({ board }) {
         >
           Inivte
         </Button>
-
-        <BoardUserGroup />
+        <BoardUserGroup boardUsers={board?.FE_allUsers} />
       </Box>
     </Box>
   )
