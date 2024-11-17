@@ -11,18 +11,16 @@ import BoardContent from './BoardContent/BoardContent'
 import { useParams } from 'react-router-dom'
 import { moveCardToDifferentColumnAPI, updateBoardDetailsAPI, updateColumnDetailsAPI } from '~/apis'
 import PageLoading from '~/components/Loading/PageLoading'
+import ActiveCard from '~/components/Modal/ActiveCard/ActiveCard'
 import {
   fetchBoardDetailsAPI,
   selectCurrentActiveBoard,
   updateCurrentActiveBoard
 } from '~/redux/activeBoard/activeBoardSlice'
-import ActiveCard from '~/components/Modal/ActiveCard/ActiveCard'
-import { selectCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
 
 function Board() {
   const dispatch = useDispatch()
   const board = useSelector(selectCurrentActiveBoard)
-  const activeCard = useSelector(selectCurrentActiveCard)
   const { boardId } = useParams()
 
   useEffect(() => {
@@ -94,8 +92,8 @@ function Board() {
 
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
-      {/* Check if the open/close condition for the active modal card exists in the Redux data. There should only be one active modal card at a time*/}
-      {activeCard && <ActiveCard />}
+      {/* Check if the open/close condition of isShowMoldalActiveCard state */}
+      <ActiveCard />
 
       {/* Board components */}
       <AppBar />

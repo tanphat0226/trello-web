@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useDispatch } from 'react-redux'
-import { updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
+import { showModalActiveCard, updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
 
 function Card({ card }) {
   const dispatch = useDispatch()
@@ -39,11 +39,15 @@ function Card({ card }) {
     !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length
 
   /**
-   * Update data for activeCard in Redux
-   * @param {Object} card The card data to be updated
-   * @returns {void}
+   * Sets the current card as active and shows the card modal.
+   * Dispatches actions to update the current active card in the Redux store
+   * and to display the modal for the active card.
    */
-  const setActiveCard = () => dispatch(updateCurrentActiveCard(card))
+  const setActiveCard = () => {
+    dispatch(updateCurrentActiveCard(card))
+
+    dispatch(showModalActiveCard())
+  }
 
   return (
     <MuiCard
