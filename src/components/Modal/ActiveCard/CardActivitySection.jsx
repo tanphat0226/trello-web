@@ -81,6 +81,7 @@ function CardActivitySection({ cardComments = [], onAddCardComment }) {
 
             <Box
               sx={{
+                width: 'fit-content',
                 display: 'block',
                 bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#33485D' : 'white'),
                 p: '8px 12px',
